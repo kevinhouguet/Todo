@@ -17,6 +17,10 @@ const app = {
         // On écoute la soumission du formulaire d'ajout
         document.querySelector('.create-task').addEventListener('submit', taskManager.handleCreateForm);
 
+        // on ecoute le bouton de fermeture de la notif et on clos la notif
+        document.querySelector('.notification .delete').addEventListener('click', () => {
+            document.querySelector('.notification').classList.add('is-hidden');
+        })
     }
 
 };

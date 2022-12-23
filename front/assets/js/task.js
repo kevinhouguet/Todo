@@ -70,6 +70,7 @@ const taskManager = {
         // On insère le HTML de la tâche dans la page
         document.querySelector('.tasks').append(newTask);
 
+        // reset du formulaire seulement a la fin de l'insertion de la task
         document.querySelector('.create-task').reset();
 
     },
@@ -124,6 +125,9 @@ const taskManager = {
 
             // On supprime l'élément dans la page HTML
             taskHtmlElement.remove();
+
+            // on affiche la notif
+            document.querySelector('.notification').classList.remove('is-hidden');
         }    
     },
 
