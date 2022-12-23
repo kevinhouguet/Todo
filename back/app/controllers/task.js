@@ -29,7 +29,6 @@ const taskController = {
             console.error(error);
             res.status(500).send('Erreur du serveur')
         }
-        
     },
     updateTask: async function(req,res){
         try {
@@ -43,7 +42,7 @@ const taskController = {
             const task = await Task.findByPk(parseInt(id));
 
             if(!task){
-                res.status(404).json({error: "La task n'existe pas"});
+                return res.status(404).json({error: "La task n'existe pas"});
             }
 
             if(name){
@@ -69,7 +68,7 @@ const taskController = {
             const task = await Task.findByPk(parseInt(id));
 
             if(!task){
-                res.status(404).json({error: "La task n'existe pas"});
+                return res.status(404).json({error: "La task n'existe pas"});
             }
 
             await task.destroy();
