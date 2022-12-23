@@ -70,6 +70,8 @@ const taskManager = {
         // On insère le HTML de la tâche dans la page
         document.querySelector('.tasks').append(newTask);
 
+        document.querySelector('.create-task').reset();
+
     },
 
     /**
@@ -122,11 +124,7 @@ const taskManager = {
 
             // On supprime l'élément dans la page HTML
             taskHtmlElement.remove();
-        }
-
-        
-
-
+        }    
     },
 
     /**
