@@ -12,12 +12,15 @@ const taskController = {
             console.error(error);
             res.status(500).send('Erreur du serveur')
         }
-        
     },
 
     createTask: async function(req,res){
         try {
             const { name } = req.body;
+
+            if(!name){
+                throw Error('Veuillez indiquer un name')
+            }
 
             const newTask = await Task.create({name});
             
