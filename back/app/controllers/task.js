@@ -33,7 +33,7 @@ const taskController = {
             const { name } = req.body;
             const { id } = req.params;
 
-            if(!id){
+            if(!id || isNaN(id)){
                 throw Error(`Verifiez l'id donne`);
             }
 
@@ -50,6 +50,28 @@ const taskController = {
             await task.save();
             
             res.status(200).json(task);
+        } catch (error) {
+            console.error(error);
+            res.status(500).send('Erreur du serveur')
+        }
+    },
+    deleteTask: async function(req,res){
+        try {
+            const { id } = req.params;
+
+            if(!id || isNaN(id)){
+                throw Error(`Verifiez l'id donne`);
+            }
+
+            const task = await Task.findByPk(parseInt(id));
+
+            if(!task){
+                res.status(404).json({error: "La task n'existe pas"});
+            }
+
+            await task.destroy();
+            
+            res.status(204).end();
         } catch (error) {
             console.error(error);
             res.status(500).send('Erreur du serveur')
