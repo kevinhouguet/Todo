@@ -12,9 +12,9 @@ const taskManager = {
             const httpResponse = await fetch(`${taskManager.apiEndpoint}/tasks`);
             const data = await httpResponse.json();
 
-            console.log(data);
-            if(!data){
-                throw Error('Fetch Error')
+            // console.log(data);
+            if(!httpResponse.ok){
+                throw new Error('Fetch Error')
             }
 
             // Boucle sur la liste des tâches            
@@ -23,13 +23,9 @@ const taskManager = {
                 taskManager.insertTaskInHtml(task);
             });
             
-        } catch (error) {
-            console.error(error);
+        } catch (e) {
+            console.error(e);
         }
-        
-        
-
-
     },
 
     /**
@@ -87,20 +83,28 @@ const taskManager = {
         // Récupérer les données du formulaire
         const taskFormData = new FormData(event.currentTarget);
 
-        // Envoyer les données à l'API
-        const httpResponse = await fetch(`${taskManager.apiEndpoint}/tasks`, {
-            method: 'POST',
-            body: taskFormData
-        })
+        try {
+            // Envoyer les données à l'API
+            const httpResponse = await fetch(`${taskManager.apiEndpoint}/tasks`, {
+                method: 'POST',
+                body: taskFormData
+            })
 
-        const data = await httpResponse.json();
+            if(!httpResponse.ok){
+                throw new Error('Fetch error')
+            }
 
-        // Après confirmation de l'API insérer la tâche dans la page (il y a une fonction toute prete pour ça ;) 
-        // en utilisant la valeur de retour de l'API
+            const data = await httpResponse.json();
 
-        if(data){
+            // Après confirmation de l'API insérer la tâche dans la page (il y a une fonction toute prete pour ça ;) 
+            // en utilisant la valeur de retour de l'API
+
             taskManager.insertTaskInHtml(data);
+        } catch (e) {
+            console.error(e);
         }
+
+        
     },
 
     /**
@@ -115,19 +119,23 @@ const taskManager = {
         const taskId = taskHtmlElement.dataset.id;
 
         if(confirm('Voulez-vous vraiment supprimer cette tache ?')){
-            // On envoie la requete de suppression à l'API
-            const httpResponse = await fetch(`${taskManager.apiEndpoint}/tasks/${taskId}`, {
-                method: 'DELETE'
-            })
-            if(!httpResponse){
-                throw Error('impossible de supprimer cette tache');
+            try {
+                // On envoie la requete de suppression à l'API
+                const httpResponse = await fetch(`${taskManager.apiEndpoint}/tasks/${taskId}`, {
+                    method: 'DELETE'
+                })
+                if(!httpResponse){
+                    throw Error('impossible de supprimer cette tache');
+                }
+
+                // On supprime l'élément dans la page HTML
+                taskHtmlElement.remove();
+
+                // on affiche la notif
+                document.querySelector('.notification').classList.remove('is-hidden');
+            } catch (e) {
+                console.error(e)
             }
-
-            // On supprime l'élément dans la page HTML
-            taskHtmlElement.remove();
-
-            // on affiche la notif
-            document.querySelector('.notification').classList.remove('is-hidden');
         }    
     },
 
@@ -163,21 +171,28 @@ const taskManager = {
         // je récupère l'id de la tâche à modifier
         const taskId = taskFormData.get('id');
 
-        // Envoyer les données à l'API
-        const httpResponse = await fetch(`${taskManager.apiEndpoint}/tasks/${taskId}`, {
-            method: 'PUT',
-            body: taskFormData
-        })
+        try {
+            // Envoyer les données à l'API
+            const httpResponse = await fetch(`${taskManager.apiEndpoint}/tasks/${taskId}`, {
+                method: 'PUT',
+                body: taskFormData
+            })
+            if(!httpResponse){
+                throw Error('Fetch error');
+            }
+            const data = await httpResponse.json();
 
-        const data = await httpResponse.json();
+            // Après confirmation de l'API modifier le nom de la tâche dans le span.task__name
+            taskHtmlElement.querySelector('.task__name').textContent = data.name;
 
-        // Après confirmation de l'API modifier le nom de la tâche dans le span.task__name
-        taskHtmlElement.querySelector('.task__name').textContent = data.name;
-
-        // On affiche l'input de modification
-        taskHtmlElement.querySelector('.task__edit-form').style.display = 'none';
-        // On masque le titre
-        taskHtmlElement.querySelector('.task__name').style.display = 'block';
+            // On affiche l'input de modification
+            taskHtmlElement.querySelector('.task__edit-form').style.display = 'none';
+            // On masque le titre
+            taskHtmlElement.querySelector('.task__name').style.display = 'block';
+        } catch (e) {
+            console.error(e)
+        }
+        
     }
 
 };
