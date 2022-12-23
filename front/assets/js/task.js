@@ -7,19 +7,27 @@ const taskManager = {
      */
     fetchAndInsertTasksFromApi: async function (event) {
 
+        try {
+           // Récupère la liste des tâches à l'aide de la fonction fetch()
+            const httpResponse = await fetch(`${taskManager.apiEndpoint}/tasks`);
+            const data = await httpResponse.json();
 
-        // Récupère la liste des tâches à l'aide de la fonction fetch()
-        const httpResponse = await fetch(`${this.apiEndpoint}/tasks`);
-        const data = await httpResponse.json();
+            console.log(data);
+            if(!data){
+                throw Error('Fetch Error')
+            }
 
-        console.log(data);
-
-        // Boucle sur la liste des tâches
-
-        data.forEach(task => {
-            // pour chaque tâche appeler la fonction insertTaskInHtml()
-            taskManager.insertTaskInHtml(task);
-        });
+            // Boucle sur la liste des tâches            
+            data.forEach(task => {
+                // pour chaque tâche appeler la fonction insertTaskInHtml()
+                taskManager.insertTaskInHtml(task);
+            });
+            
+        } catch (error) {
+            console.error(error);
+        }
+        
+        
 
 
     },
@@ -69,7 +77,7 @@ const taskManager = {
      * 
      * @param {Event} event 
      */
-    handleCreateForm: function (event) {
+    handleCreateForm: async function (event) {
         // Bloquer l'envoie du formulaire
         event.preventDefault();
 
@@ -77,9 +85,19 @@ const taskManager = {
         const taskFormData = new FormData(event.currentTarget);
 
         // Envoyer les données à l'API
+        const httpResponse = await fetch(`${taskManager.apiEndpoint}/tasks`, {
+            method: 'POST',
+            body: taskFormData
+        })
+
+        const data = await httpResponse.json();
 
         // Après confirmation de l'API insérer la tâche dans la page (il y a une fonction toute prete pour ça ;) 
         // en utilisant la valeur de retour de l'API
+
+        if(data){
+            taskManager.insertTaskInHtml(data);
+        }
 
     },
 
