@@ -98,7 +98,6 @@ const taskManager = {
         if(data){
             taskManager.insertTaskInHtml(data);
         }
-
     },
 
     /**
@@ -137,7 +136,7 @@ const taskManager = {
      * 
      * @param {Event} event 
      */
-    handleEditForm: function (event) {
+    handleEditForm: async function (event) {
         // Bloquer l'envoie du formulaire
         event.preventDefault();
 
@@ -151,9 +150,15 @@ const taskManager = {
         const taskId = taskFormData.get('id');
 
         // Envoyer les données à l'API
+        const httpResponse = await fetch(`${taskManager.apiEndpoint}/tasks/${taskId}`, {
+            method: 'PUT',
+            body: taskFormData
+        })
 
+        const data = await httpResponse.json();
 
         // Après confirmation de l'API modifier le nom de la tâche dans le span.task__name
+        taskHtmlElement.querySelector('.task__name').textContent = data.name;
 
         // On affiche l'input de modification
         taskHtmlElement.querySelector('.task__edit-form').style.display = 'none';
