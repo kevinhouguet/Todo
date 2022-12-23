@@ -9,10 +9,18 @@ const taskManager = {
 
 
         // Récupère la liste des tâches à l'aide de la fonction fetch()
+        const httpResponse = await fetch(`${this.apiEndpoint}/tasks`);
+        const data = await httpResponse.json();
+
+        console.log(data);
 
         // Boucle sur la liste des tâches
 
-        // pour chaque tâche appeler la fonction insertTaskInHtml()
+        data.forEach(task => {
+            // pour chaque tâche appeler la fonction insertTaskInHtml()
+            taskManager.insertTaskInHtml(task);
+        });
+
 
     },
 
