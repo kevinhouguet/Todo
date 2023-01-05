@@ -10,12 +10,13 @@ const taskManager = {
         try {
            // Récupère la liste des tâches à l'aide de la fonction fetch()
             const httpResponse = await fetch(`${taskManager.apiEndpoint}/tasks`);
-            const data = await httpResponse.json();
-
+            
             // console.log(data);
             if(!httpResponse.ok){
                 throw new Error('Fetch Error')
             }
+            
+            const data = await httpResponse.json();
 
             // Boucle sur la liste des tâches            
             data.forEach(task => {
