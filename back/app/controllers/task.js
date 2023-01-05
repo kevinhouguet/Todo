@@ -10,7 +10,7 @@ const taskController = {
             res.status(200).json(tasks);
         } catch (error) {
             console.error(error);
-            res.status(500).send('Erreur du serveur')
+            res.status(500).json({error: 'Erreur du serveur'})
         }
     },
 
@@ -19,7 +19,7 @@ const taskController = {
             const { name } = req.body;
 
             if(!name){
-                throw Error('Veuillez indiquer un name')
+                return res.status(400).json({error:'Veuillez indiquer un name'})
             }
 
             const newTask = await Task.create({name});
@@ -27,7 +27,7 @@ const taskController = {
             res.status(201).json(newTask)
         } catch (error) {
             console.error(error);
-            res.status(500).send('Erreur du serveur')
+            res.status(500).json({error: 'Erreur du serveur'})
         }
     },
     updateTask: async function(req,res){
@@ -54,7 +54,7 @@ const taskController = {
             res.status(200).json(task);
         } catch (error) {
             console.error(error);
-            res.status(500).send('Erreur du serveur')
+            res.status(500).json({error: 'Erreur du serveur'})
         }
     },
     deleteTask: async function(req,res){
@@ -76,7 +76,7 @@ const taskController = {
             res.status(204).end();
         } catch (error) {
             console.error(error);
-            res.status(500).send('Erreur du serveur')
+            res.status(500).json({error: 'Erreur du serveur'})
         }
     }
 };
